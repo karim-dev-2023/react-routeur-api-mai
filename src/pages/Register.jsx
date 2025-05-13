@@ -50,11 +50,6 @@ const Register = () => {
         throw new Error({ status: response.status, message: data.message });
       } else if (response.status == 201) {
         navigate("/");
-      } else {
-        setErrorText(
-          "Erreur de validation des champs : veuillez utiliser un autre adresse mail"
-        );
-        console.log("Erreur de validation des champs");
       }
     } catch (error) {
       setErrorText(
