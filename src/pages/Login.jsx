@@ -1,5 +1,14 @@
 import { useState } from "react";
-import { Form, Button, Container, Card, Row, Col } from "react-bootstrap";
+import { useNavigate } from "react-router";
+import {
+  Form,
+  Button,
+  Container,
+  Card,
+  Row,
+  Col,
+  Alert,
+} from "react-bootstrap";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -14,14 +23,42 @@ const LoginPage = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const [errorText, setErrorText] = useState();
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // Handle login logic here
     // Don't forget to handle errors, both for yourself (dev) and for the client (via a Bootstrap Alert):
     //   - Show an error if credentials are invalid
     //   - Show a generic error for all other cases
     // On success, redirect to the Pro Offers page
-    console.log("Login submitted:", formData);
+    try {
+      const response = await fetch(
+        "https://offers-api.digistos.com/api/auth/login",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error({ status: response.status, message: data.message });
+      } else if (response.status == 200) {
+        navigate("/offres/professionnelles");
+      }
+    } catch (error) {
+     
+      console.log(error);
+      
+      setErrorText("Email ou mot de passe incorrect");
+    
+    }
   };
 
   return (
@@ -30,6 +67,11 @@ const LoginPage = () => {
         <Col xs={12} sm={8} md={6} lg={4}>
           <Card className="p-4 shadow-lg">
             <h2 className="text-center mb-4">Se connecter</h2>
+            {errorText && (
+              <Alert key="warning" variant="warning">
+                {errorText}
+              </Alert>
+            )}
             <Form onSubmit={handleSubmit}>
               <Form.Group className="mb-3" controlId="loginEmail">
                 <Form.Label>Email</Form.Label>

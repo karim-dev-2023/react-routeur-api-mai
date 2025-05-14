@@ -12,9 +12,9 @@ import {
 
 const Register = () => {
   const [formData, setFormData] = useState({
-    name: "Karim",
-    email: "karim@example.com",
-    password: "secret123",
+    name: "",
+    email: "",
+    password: "",
   });
 
   const [errorText, setErrorText] = useState();
@@ -55,7 +55,6 @@ const Register = () => {
       setErrorText(
         "Erreur de validation des champs : veuillez utiliser un autre adresse mail"
       );
-      console.log(error);
     }
   };
 

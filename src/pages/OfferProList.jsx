@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Spinner, Alert } from "react-bootstrap";
 import OfferList from "../components/OfferList.jsx";
 
@@ -20,12 +20,12 @@ const OfferProList = () => {
           }
         );
 
-        const data = await response.json();
+        const { data: offers, message } = await response.json();
         if (!response.ok) {
-          throw { status: response.status, message: data.message };
+          throw { status: response.status, message: message };
         }
 
-        setOffers(data);
+        setOffers(offers);
       } catch (err) {
         if (err.status === 401) {
           setError("Vous n'êtes pas autorisé à accéder aux offres (401).");
