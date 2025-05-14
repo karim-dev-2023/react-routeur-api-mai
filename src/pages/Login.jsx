@@ -12,8 +12,8 @@ import {
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
-    email: "karim.ayoub.snlgb@gmail.com",
-    password: "12dsqsdqf",
+    email: "karim.ayoub@example.com",
+    password: "secret123",
   });
 
   const handleChange = (e) => {
@@ -46,10 +46,18 @@ const LoginPage = () => {
         }
       );
 
+      const data = await response.json();
+
       if (!response.ok) {
-        const data = await response.json();
         throw { status: response.status, message: data.message };
       }
+
+      localStorage.setItem("auth",JSON.stringify({
+        token: data.access_token,
+        // Calcule la date d’expiration en ISO à partir de l’heure actuelle et de expires_in
+        expiresAt: new Date(Date.now() + data.expires_in * 1000).toISOString() 
+      }));
+
       navigate("/offres/professionnelles");
     } catch (error) {
       console.error(error);
