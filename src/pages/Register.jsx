@@ -47,11 +47,11 @@ const Register = () => {
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error({ status: response.status, message: data.message });
-      } else if (response.status == 201) {
-        navigate("/");
+        throw { status: response.status, message: data.message };
       }
+      navigate("/");
     } catch (error) {
+      console.error(error);
       setErrorText(
         "Erreur de validation des champs : veuillez utiliser un autre adresse mail"
       );

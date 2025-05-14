@@ -12,8 +12,8 @@ import {
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
-    email: "",
-    password: "",
+    email: "karim.ayoub.snlgb@gmail.com",
+    password: "12dsqsdqf",
   });
 
   const handleChange = (e) => {
@@ -48,16 +48,16 @@ const LoginPage = () => {
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error({ status: response.status, message: data.message });
-      } else if (response.status == 200) {
-        navigate("/offres/professionnelles");
+        throw { status: response.status, message: data.message };
       }
+      navigate("/offres/professionnelles");
     } catch (error) {
-     
-      console.log(error);
-      
-      setErrorText("Email ou mot de passe incorrect");
-    
+      console.error(error);
+      if (error.status == 401) {
+        setErrorText("Email ou mot de passe incorrect");
+      }else{
+        setErrorText("Une erreur est survenue");
+      }
     }
   };
 
