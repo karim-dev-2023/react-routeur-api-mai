@@ -9,11 +9,13 @@ import {
   Col,
   Alert,
 } from "react-bootstrap";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../store/slice";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
-    email: "karim.ayoub.snlgb@gmail.com",
-    password: "12dsqsdqf",
+    email: "",
+    password: "secret1234",
   });
 
   const handleChange = (e) => {
@@ -25,6 +27,7 @@ const LoginPage = () => {
 
   const [errorText, setErrorText] = useState();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,16 +49,26 @@ const LoginPage = () => {
         }
       );
 
+      const data = await response.json();
       if (!response.ok) {
-        const data = await response.json();
         throw { status: response.status, message: data.message };
       }
+
+      dispatch(
+        loginSuccess({
+          token: data.access_token,
+          expiresAt: new Date(
+            Date.now() + data.expires_in * 1000
+          ).toISOString(),
+        })
+      );
+
       navigate("/offres/professionnelles");
     } catch (error) {
       console.error(error);
       if (error.status == 401) {
         setErrorText("Email ou mot de passe incorrect");
-      }else{
+      } else {
         setErrorText("Une erreur est survenue");
       }
     }
