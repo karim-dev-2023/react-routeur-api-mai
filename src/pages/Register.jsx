@@ -42,11 +42,12 @@ const Register = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(formData),
+           credentials: "include", // permet au navigateur de recevoir et stocker le cookie HttpOnly
         }
       );
 
+      const data = await response.json();
       if (!response.ok) {
-        const data = await response.json();
         throw { status: response.status, message: data.message };
       }
       navigate("/");

@@ -12,8 +12,8 @@ import {
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
-    email: "karim.ayoub.snlgb@gmail.com",
-    password: "12dsqsdqf",
+    email: "mr.karimayub123@gmail.com",
+    password: "secret123",
   });
 
   const handleChange = (e) => {
@@ -43,19 +43,30 @@ const LoginPage = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(formData),
+          credentials: "include", // permet au navigateur de recevoir et stocker le cookie HttpOnly
         }
       );
 
+      const data = await response.json();
       if (!response.ok) {
-        const data = await response.json();
         throw { status: response.status, message: data.message };
       }
+
+      localStorage.setItem(
+        "auth",
+        JSON.stringify({
+          expiresAt: new Date(
+            Date.now() + data.expires_in * 1000
+          ).toISOString(),
+        })
+      );
+      
       navigate("/offres/professionnelles");
     } catch (error) {
       console.error(error);
       if (error.status == 401) {
         setErrorText("Email ou mot de passe incorrect");
-      }else{
+      } else {
         setErrorText("Une erreur est survenue");
       }
     }
